@@ -12,14 +12,41 @@ enum{
 	TIMER_PERIOD_MILLI=150000,
 	TIMER_FAST_PERIOD=200,
 	TIMER_LEDS_MILLI=1000,
+	EPOCH_LENGTH=20000,
+	AGGREGATION_TYPE_MIN=1,
+	AGGREGATION_TYPE_SUM=2,
+	AGGREGATION_TYPE_AVG=3,
 };
 /*uint16_t AM_ROUTINGMSG=AM_SIMPLEROUTINGTREEMSG;
 uint16_t AM_NOTIFYPARENTMSG=AM_SIMPLEROUTINGTREEMSG;
 */
+//ADDED
+typedef nx_struct AggregationMin {
+	nx_uint16_t epoch;      // epoch number
+	nx_uint8_t minVal;      // minimum value (used for MIN)
+	nx_uint16_t senderID;   // id of node sending this msg (optional, for debug)
+} AggregationMin;
+
+typedef nx_struct AggregationSUM {
+	nx_uint16_t epoch;      // epoch number
+	nx_uint16_t sum;      // sum value (used for SUM)
+	nx_uint16_t senderID;   // id of node sending this msg (optional, for debug)
+} AggregationSUM;
+
+typedef nx_struct AggregationAVG {
+	nx_uint16_t epoch;      // epoch number
+	nx_uint16_t sum;        // sum value (used for AVG)
+	nx_uint16_t count;      // count of values (used for AVG)
+	nx_uint16_t senderID;   // id of node sending this msg (optional, for debug)
+} AggregationAVG;
+//END ADDED
+
+
 typedef nx_struct RoutingMsg
 {
 	nx_uint16_t senderID;
 	nx_uint8_t depth;
+	nx_uint8_t aggType;     // ADDED
 } RoutingMsg;
 
 typedef nx_struct NotifyParentMsg

@@ -67,6 +67,12 @@ implementation
 	uint8_t curdepth;
 	uint16_t parentID;
 	
+//ADDED
+	nx_uint8_t aggType=0;
+	nx_uint16_t sample=0;
+	nx_uint16_t epochCounter=0;
+//END ADDED
+
 	task void sendRoutingTask();
 	task void sendNotifyTask();
 	task void receiveRoutingTask();
@@ -317,7 +323,10 @@ implementation
 			dbg("SRTreeC", "\n ##################################### \n");
 			dbg("SRTreeC", "#######   ROUND   %u    ############## \n", roundCounter);
 			dbg("SRTreeC", "#####################################\n");
-			
+			//ADDED
+			//generate random aggType
+			aggType= (call Random.rand8() %3) +1; // 1=MIN,2=SUM,3=AVG
+
 			call RoutingMsgTimer.startOneShot(TIMER_PERIOD_MILLI);
 		}
 		
@@ -344,6 +353,7 @@ implementation
 		atomic{
 		mrpkt->senderID=TOS_NODE_ID;
 		mrpkt->depth = curdepth;
+		mrpkt->aggType=aggType; //ADDED
 		}
 		dbg("SRTreeC" , "Sending RoutingMsg... \n");
 
@@ -780,7 +790,7 @@ implementation
 			//}
 			//
 			
-			dbg("SRTreeC" , "receiveRoutingTask():senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
+			dbg("SRTreeC" , "receiveRoutingTask():senderID= %d , depth= %d , aggType= %d \n", mpkt->senderID , mpkt->depth, mpkt->aggType); //ADDED aggtype
 #ifdef PRINTFDBG_MODE
 			printf("NodeID= %d , RoutingMsg received! \n",TOS_NODE_ID);
 			printf("receiveRoutingTask():senderID= %d , depth= %d \n", mpkt->senderID , mpkt->depth);
@@ -791,6 +801,7 @@ implementation
 				// tote den exei akoma patera
 				parentID= call RoutingAMPacket.source(&radioRoutingRecPkt);//mpkt->senderID;q
 				curdepth= mpkt->depth + 1;
+				aggtype=mpkt->aggType; //ADDED
 #ifdef PRINTFDBG_MODE
 				printf("NodeID= %d : curdepth= %d , parentID= %d \n", TOS_NODE_ID ,curdepth , parentID);
 				printfflush();
@@ -826,7 +837,7 @@ implementation
 					call RoutingMsgTimer.startOneShot(TIMER_FAST_PERIOD);
 				}
 			}
-			else
+			else//to be checked
 			{
 				
 				if (( curdepth > mpkt->depth +1) || (mpkt->senderID==parentID))
