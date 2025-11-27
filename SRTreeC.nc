@@ -535,7 +535,10 @@ implementation
    			 
 	if (len == sizeof(RoutingMsg)) {
 		RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
-
+		if(mpkt==NULL)
+		{
+			return;
+		}
 		dbg("SRTreeC", "receiveRoutingTask():senderID= %d , depth= %d , aggType= %d \n", mpkt->senderID, mpkt->depth, mpkt->aggType);
 #ifdef PRINTFDBG_MODE
 		printf("NodeID= %d , RoutingMsg received! \n", TOS_NODE_ID);
@@ -656,8 +659,9 @@ implementation
    	 
    	 //call Leds.led2On();
    	 //call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
+	mdest=call AggMinAMPacket.destination(&toSend);
  	 mlen= call AggMinPacket.payloadLength(&toSend);
- 	 mdest=call AggMinAMPacket.destination(&toSend);
+
 	 dbg("SentAggMin","Min Value to send in packet min %d\n", ((AggregationMin*)call AggMinPacket.getPayload(&toSend, mlen))->minVal);
    	 if(mlen!=sizeof(AggregationMin))
    	 {
