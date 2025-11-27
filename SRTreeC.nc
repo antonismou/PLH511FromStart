@@ -34,35 +34,30 @@ module SRTreeC
 
 	// aggregation interfaces
 	uses interface Random as Random;
-	uses interface Packet as AggQueryPacket;
-	uses interface AMPacket as AggQueryAMPacket;
-	uses interface AMSend as AggQueryAMSend;
-	uses interface Receive as AggQueryReceive;
+/*
 	uses interface PacketQueue as AggQuerySendQueue;
 	uses interface PacketQueue as AggQueryReceiveQueue;
 
 	uses interface Packet as AggMinPacket;
-	uses interface AMPacket as AggMinAMPacket;
 	uses interface AMSend as AggMinAMSend;
 	uses interface Receive as AggMinReceive;
 	uses interface PacketQueue as AggMinSendQueue;
 	uses interface PacketQueue as AggMinReceiveQueue;
 
 	uses interface Packet as AggSumPacket;
-	uses interface AMPacket as AggSumAMPacket;
 	uses interface AMSend as AggSumAMSend;
 	uses interface Receive as AggSumReceive;
 	uses interface PacketQueue as AggSumSendQueue;
 	uses interface PacketQueue as AggSumReceiveQueue;
 
 	uses interface Packet as AggAvgPacket;
-	uses interface AMPacket as AggAvgAMPacket;
 	uses interface AMSend as AggAvgAMSend;
 	uses interface Receive as AggAvgReceive;
 	uses interface PacketQueue as AggAvgSendQueue;
 	uses interface PacketQueue as AggAvgReceiveQueue;
 
-	uses interface Timer<TMilli> as AggTimer;
+	uses interface Timer<TMilli> as EpochTimer;
+	*/
 }
 implementation
 {
