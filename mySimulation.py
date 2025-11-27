@@ -18,7 +18,7 @@ SIM_END_TIME= 100 * t.ticksPerSecond()
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 
 #t.addChannel("Boot",f)
-t.addChannel("printTopology",f)
+#t.addChannel("printTopology",f)
 #t.addChannel("RoutingMsg",f)
 #t.addChannel("NotifyParentMsg",f)
 #t.addChannel("Radio",f)
@@ -26,9 +26,9 @@ t.addChannel("printTopology",f)
 #t.addChannel("SRTreeC",f)
 #t.addChannel("PacketQueueC",f)
 #t.addChannel("Epoch",f)
-t.addChannel("Sample",f)
-t.addChannel("Min",f)
-t.addChannel("Results",f)
+#t.addChannel("Sample",f)
+#t.addChannel("Min",f)
+#t.addChannel("Results",f)
 t.addChannel("ReceiveAggMin",f)
 
 

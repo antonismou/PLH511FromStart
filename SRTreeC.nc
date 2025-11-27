@@ -677,7 +677,7 @@ implementation
    	 
    	 msource =call AggMinAMPacket.source(msg);
 
-    	dbg("Epoch", "AggMin received (src=%u, len=%u)\n", msource, len);
+    dbg("ReceiveAggMin", "AggMin received (src=%u, len=%u)\n", msource, len);
    	 
    	 atomic{
    	 memcpy(&tmp,msg,sizeof(message_t));
@@ -686,7 +686,7 @@ implementation
    	 enqueueDone=call AggMinReceiveQueue.enqueue(tmp);
    	 if(enqueueDone == SUCCESS)
    	 {
-   		 post receiveAggMinTask();
+   		post receiveAggMinTask();
    	 }
    	 else
    	 {
