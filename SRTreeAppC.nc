@@ -46,7 +46,7 @@ implementation{
     
   
 #ifdef SERIAL_EN    
-    SRTreeC.SerialReceive->SerialAMReceiverC.Receive;
+    //SRTreeC.SerialReceive->SerialAMReceiverC.Receive;
     SRTreeC.SerialAMSend->SerialAMSenderC.AMSend;
     SRTreeC.SerialAMPacket->SerialAMSenderC.AMPacket;
     SRTreeC.SerialPacket->SerialAMSenderC.Packet;
