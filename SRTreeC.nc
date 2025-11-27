@@ -657,6 +657,7 @@ implementation
    	 //call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
  	 mlen= call AggMinPacket.payloadLength(&toSend);
  	 mdest=call AggMinAMPacket.destination(&toSend);
+	 dbg("SentAggMin","Min Value to send in packet min %d\n", ((AggregationMin*)call AggMinPacket.getPayload(&toSend, mlen))->senderID);
    	 if(mlen!=sizeof(AggregationMin))
    	 {
    		 dbg("SentAggMin","\t\tsendAggMinTask(): Unknown message!!!\n");
