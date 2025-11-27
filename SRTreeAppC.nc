@@ -18,19 +18,19 @@ implementation{
     components new TimerMilliC() as Led2TimerC;
     components new TimerMilliC() as RoutingMsgTimerC;
     components new TimerMilliC() as LostTaskTimerC;
+
+	components new TimerMilliC() as EpochTimerC; //ADDED
     
     components new AMSenderC(AM_ROUTINGMSG) as RoutingSenderC;
     components new AMReceiverC(AM_ROUTINGMSG) as RoutingReceiverC;
-    components new AMSenderC(AM_NOTIFYPARENTMSG) as NotifySenderC;
-    components new AMReceiverC(AM_NOTIFYPARENTMSG) as NotifyReceiverC;
+    /* Notify components removed - not used by TinyAggregation */
 #ifdef SERIAL_EN
     components new SerialAMSenderC(AM_NOTIFYPARENTMSG);
     components new SerialAMReceiverC(AM_NOTIFYPARENTMSG);
 #endif
     components new PacketQueueC(SENDER_QUEUE_SIZE) as RoutingSendQueueC;
     components new PacketQueueC(RECEIVER_QUEUE_SIZE) as RoutingReceiveQueueC;
-    components new PacketQueueC(SENDER_QUEUE_SIZE) as NotifySendQueueC;
-    components new PacketQueueC(RECEIVER_QUEUE_SIZE) as NotifyReceiveQueueC;
+    /* Notify queues removed: TinyAggregation doesn't use notify parent messages */
     
     SRTreeC.Random->RandomC;
     SRTreeC.Boot->MainC.Boot;
@@ -42,17 +42,15 @@ implementation{
     SRTreeC.Led1Timer-> Led1TimerC;
     SRTreeC.Led2Timer-> Led2TimerC;
     SRTreeC.RoutingMsgTimer->RoutingMsgTimerC;
-    SRTreeC.LostTaskTimer->LostTaskTimerC;
     
+	SRTreeC.EpochTimer->EpochTimerC; //ADDED
+
     SRTreeC.RoutingPacket->RoutingSenderC.Packet;
     SRTreeC.RoutingAMPacket->RoutingSenderC.AMPacket;
     SRTreeC.RoutingAMSend->RoutingSenderC.AMSend;
     SRTreeC.RoutingReceive->RoutingReceiverC.Receive;
     
-    SRTreeC.NotifyPacket->NotifySenderC.Packet;
-    SRTreeC.NotifyAMPacket->NotifySenderC.AMPacket;
-    SRTreeC.NotifyAMSend->NotifySenderC.AMSend;
-    SRTreeC.NotifyReceive->NotifyReceiverC.Receive;
+    /* Notify bindings removed */
     
 #ifdef SERIAL_EN    
     SRTreeC.SerialReceive->SerialAMReceiverC.Receive;
