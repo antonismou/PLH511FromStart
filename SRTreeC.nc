@@ -595,7 +595,7 @@ implementation
 				am->senderID = TOS_NODE_ID;
 				}
 				am = (AggregationMin*) call AggMinPacket.getPayload(&out, sizeof(AggregationMin));
-				dbg("Epoch", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
+				dbg("SentAggMin", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
 				/* don't send if we don't have a parent yet */
 				if (parentID == -1) {
 					dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
