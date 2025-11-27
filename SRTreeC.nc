@@ -99,12 +99,13 @@ implementation
 	bool serialBusy = FALSE;
 #endif
 
-
+/*
 #ifdef SERIAL_EN
     uses interface AMSend as SerialAMSend;
     uses interface AMPacket as SerialAMPacket;
     uses interface Packet as SerialPacket;
 #endif
+*/
     event void Boot.booted()
     {
    	 /////// arxikopoiisi radio kai serial
