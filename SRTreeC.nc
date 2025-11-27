@@ -69,7 +69,7 @@ implementation
 	message_t serialPkt;
 
     uint8_t curdepth;
-    uint16_t parentID;
+    int16_t parentID=-1;
     
 	//ADDED
     uint8_t aggType=0;
@@ -595,6 +595,11 @@ implementation
 				am->senderID = TOS_NODE_ID;
 				}
 				dbg("Epoch", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
+				/* don't send if we don't have a parent yet */
+				if (parentID == -1) {
+					dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
+					return;
+				}
 				call AggMinAMPacket.setDestination(&out, parentID);
 				call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
 				enqueueDone=call AggMinSendQueue.enqueue(out);
@@ -656,6 +661,7 @@ implementation
    		 dbg("SentAggMin","\t\tsendAggMinTask(): Unknown message!!!\n");
    		 return;
    	 }
+		 dbg("SentAggMin","sendAggMinTask(): sending to dest=%u len=%u\n", mdest, mlen);
    	 sendDone=call AggMinAMSend.send(mdest,&toSend,mlen);
    	 
    	 if ( sendDone== SUCCESS)
