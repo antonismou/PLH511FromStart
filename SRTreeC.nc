@@ -737,7 +737,7 @@ implementation
 
 	event void AggMinAMSend.sendDone(message_t * msg , error_t err)
     {
-   	 dbg("Epoch", "A Min package sent... %s \n",(err==SUCCESS)?"True":"False");
+   	 dbg("SentAggMin", "A Min package sent... %s \n",(err==SUCCESS)?"True":"False");
 #ifdef PRINTFDBG_MODE
    	 printf("A Min package sent... %s \n",(err==SUCCESS)?"True":"False");
    	 printfflush();
