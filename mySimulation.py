@@ -25,6 +25,8 @@ t.addChannel("Boot",f)
 #t.addChannel("SRTreeC",f)
 #t.addChannel("PacketQueueC",f)
 #t.addChannel("Epoch",f)
+t.addChannel("Sample",f)
+t.addChannel("Min",f)
 t.addChannel("Results",f)
 
 

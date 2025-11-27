@@ -574,6 +574,7 @@ implementation
 				sample = 60;
 			}
 		}
+		dbg("Sample","Sample generated: %u \n in Node %d", sample, TOS_NODE_ID);
 		
 		if(aggType == AGGREGATION_TYPE_MIN){ // MIN
 			am = (AggregationMin*) call AggMinPacket.getPayload(&out, sizeof(AggregationMin));
@@ -585,6 +586,7 @@ implementation
 				temp = sample;
 				agg_min = sample;
 			}
+			dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
 			atomic{
 			am->minVal = temp;
 			am->epoch = epochCounter;
