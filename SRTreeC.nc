@@ -41,7 +41,7 @@ module SRTreeC
 	uses interface Packet as AggMinPacket;
 	uses interface AMPacket as AggMinAMPacket;
 	uses interface AMSend as AggMinAMSend;
-	uses interface Receive as AggMinReceive;
+	uses interface AMReceive as AggMinReceive;
 	uses interface PacketQueue as AggMinSendQueue;
 	uses interface PacketQueue as AggMinReceiveQueue;
 
@@ -587,22 +587,26 @@ implementation
 				temp = sample;
 				agg_min = sample;
 			}
-			dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
-			atomic{
-			am->minVal = temp;
-			am->epoch = epochCounter;
-			am->senderID = TOS_NODE_ID;
+			if(TOS_NODE_ID != 0){
+				dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
+				atomic{
+				am->minVal = temp;
+				am->epoch = epochCounter;
+				am->senderID = TOS_NODE_ID;
+				}
+				dbg("Epoch", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
+				call AggMinAMPacket.setDestination(&out, parentID);
+				call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
+				enqueueDone=call AggMinSendQueue.enqueue(out);
+		
+				if( enqueueDone==SUCCESS)
+				{
+					post sendAggMinTask();
+					dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!!\n");	
+				}
+				
 			}
-			dbg("Epoch", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
-			call AggMinAMPacket.setDestination(&out, parentID);
-			call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
-			enqueueDone=call AggMinSendQueue.enqueue(out);
-   	 
-			if( enqueueDone==SUCCESS)
-			{
-				post sendAggMinTask();
-				dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!!\n");	
-			}
+			
 		}
 		else if(aggType == AGGREGATION_TYPE_SUM){ // SUM
 			// send sum aggregation message
@@ -633,7 +637,7 @@ implementation
 
    	 if (call AggMinSendQueue.empty())
    	 {
-   		 dbg("Epoch","sendAggMinTask(): Q is empty!\n");
+   		 dbg("SentAggMin","sendAggMinTask(): Q is empty!\n");
 #ifdef PRINTFDBG_MODE   	 
    		 printf("sendAggMinTask():Q is empty!\n");
    		 printfflush();
@@ -649,7 +653,7 @@ implementation
  	 mdest=call AggMinAMPacket.destination(&toSend);
    	 if(mlen!=sizeof(AggregationMin))
    	 {
-   		 dbg("Epoch","\t\tsendAggMinTask(): Unknown message!!!\n");
+   		 dbg("SentAggMin","\t\tsendAggMinTask(): Unknown message!!!\n");
    		 return;
    	 }
    	 sendDone=call AggMinAMSend.send(mdest,&toSend,mlen);
