@@ -656,12 +656,12 @@ implementation
    	 
    	 if ( sendDone== SUCCESS)
    	 {
-   		 dbg("Epoch","sendAggMinTask(): Send returned success!!!\n");
+   		dbg("SentAggMin","sendAggMinTask success node %d to parent %d\n", TOS_NODE_ID, mdest);
 
    	 }
    	 else
    	 {
-   		 dbg("Epoch","send failed!!!\n");
+   		 dbg("SentAggMin","sendAggMinTask failed node %d to parent %d\n", TOS_NODE_ID, mdest);
 #ifdef PRINTFDBG_MODE
    		 printf("sendAggMinTask(): send failed!!!\n");
 #endif

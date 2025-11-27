@@ -30,6 +30,7 @@ t.addChannel("printTopology",f)
 #t.addChannel("Min",f)
 #t.addChannel("Results",f)
 t.addChannel("ReceiveAggMin",f)
+t.addChannel("SentAggMin",f)
 
 
 for i in range(0,nodeCount):
