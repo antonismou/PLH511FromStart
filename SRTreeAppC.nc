@@ -32,6 +32,8 @@ implementation{
     components new PacketQueueC(RECEIVER_QUEUE_SIZE) as AggMinReceiveQueueC;
     components new AMSenderC(AGGREGATION_TYPE_MIN) as AggMinSenderC;
     components new AMReceiverC(AGGREGATION_TYPE_MIN) as AggMinReceiverC;
+
+    components new TimerMilliC() as EpochTimerC;
     
     SRTreeC.Random->RandomC;
     SRTreeC.Boot->MainC.Boot;
@@ -55,6 +57,7 @@ implementation{
     SRTreeC.AggMinReceive->AggMinReceiverC.Receive;
     SRTreeC.AggMinSendQueue->AggMinSendQueueC;
     SRTreeC.AggMinReceiveQueue->AggMinReceiveQueueC;
+    SRTreeC.EpochTimer->EpochTimerC;
   
 #ifdef SERIAL_EN    
     //SRTreeC.SerialReceive->SerialAMReceiverC.Receive;
