@@ -366,8 +366,8 @@ implementation
    	 
    	 msource =call RoutingAMPacket.source(msg);
    	 
-   	 dbg("SRTreeC", "### RoutingReceive.receive() start ##### \n");
-   	 dbg("SRTreeC", "Something received!!!  from %u  %u \n",((RoutingMsg*) payload)->senderID ,  msource);
+    	dbg("SRTreeC", "### RoutingReceive.receive() start ##### \n");
+    	dbg("SRTreeC", "Something received (src=%u, len=%u)\n", msource, len);
    	 //dbg("SRTreeC", "Something received!!!\n");
 #ifdef PRINTFDBG_MODE
     	 printf("Something Received!!!, len = %u , rm=%u\n", len, sizeof(RoutingMsg));
@@ -645,8 +645,8 @@ implementation
    	 
    	 //call Leds.led2On();
    	 //call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
-   	 mlen= call RoutingPacket.payloadLength(&toSend);
-   	 mdest=call RoutingAMPacket.destination(&toSend);
+ 	 mlen= call AggMinPacket.payloadLength(&toSend);
+ 	 mdest=call AggMinAMPacket.destination(&toSend);
    	 if(mlen!=sizeof(AggregationMin))
    	 {
    		 dbg("Epoch","\t\tsendAggMinTask(): Unknown message!!!\n");
@@ -677,7 +677,7 @@ implementation
    	 
    	 msource =call AggMinAMPacket.source(msg);
 
-   	 dbg("Epoch", "Something received!!!  from %u  %u \n",((AggregationMin*) payload)->senderID ,  msource);
+    	dbg("Epoch", "AggMin received (src=%u, len=%u)\n", msource, len);
    	 
    	 atomic{
    	 memcpy(&tmp,msg,sizeof(message_t));
@@ -702,6 +702,7 @@ implementation
 
 	task void receiveAggMinTask()
     {
+	AggregationMin * mpkt;
    	message_t tmp;
    	uint8_t len;
    	message_t msg;
@@ -713,7 +714,7 @@ implementation
    	 dbg("Epoch","ReceiveAggMinTask(): len=%u \n",len);
 	 
 	if (len == sizeof(AggregationMin)) {
-		AggregationMin * mpkt = (AggregationMin*) (call AggMinPacket.getPayload(&msg,len));
+		mpkt = (AggregationMin*) (call AggMinPacket.getPayload(&msg,len));
 		if (mpkt->epoch != epochCounter) {
 			dbg("Epoch","receiveAggMinTask() from diff epoch \n");
 			return;
