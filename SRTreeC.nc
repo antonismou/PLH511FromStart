@@ -3,8 +3,6 @@
     #include "printf.h"
 #endif
 
-task void sendRoutingTask();
-task void receiveRoutingTask();
 
 module SRTreeC
 {
@@ -82,6 +80,11 @@ implementation
     uint16_t epochCounter=0;
 	//END ADDED
 	bool RoutingSendBusy = FALSE;
+
+	task void sendRoutingTask();
+	task void receiveRoutingTask();
+
+
 #ifdef SERIAL_EN
 	bool serialBusy = FALSE;
 #endif
