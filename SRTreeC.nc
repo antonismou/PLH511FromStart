@@ -718,7 +718,7 @@ implementation
 			dbg("Epoch","receiveAggMinTask() from diff epoch \n");
 			return;
 		}
-		dbg("Epoch", "receiveAggMinTask():senderID= %d, minVal=%u, epoch=%u \n", mpkt->senderID, mpkt->minVal, mpkt->epoch);
+		dbg("ReceiveAggMin", "receiveAggMinTask():senderID= %d, minVal=%u, epoch=%u \n", mpkt->senderID, mpkt->minVal, mpkt->epoch);
 		agg_min = (mpkt->minVal < agg_min) ? mpkt->minVal : agg_min;
 	}	
 

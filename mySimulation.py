@@ -13,7 +13,7 @@ nodeCount=int(sys.argv[2])
 
 t=Tossim([])
 f=sys.stdout #open('./logfile.txt','w')
-SIM_END_TIME= 1000 * t.ticksPerSecond()
+SIM_END_TIME= 100 * t.ticksPerSecond()
 
 print "TicksPerSecond : ", t.ticksPerSecond(),"\n"
 
@@ -27,8 +27,9 @@ t.addChannel("printTopology",f)
 #t.addChannel("PacketQueueC",f)
 #t.addChannel("Epoch",f)
 t.addChannel("Sample",f)
-t.addChannel("Min",f)
+t.addChannel("Min",f)ReceiveAggMin
 t.addChannel("Results",f)
+t.addChannel("ReceiveAggMin",f)
 
 
 for i in range(0,nodeCount):
