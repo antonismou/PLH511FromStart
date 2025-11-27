@@ -39,6 +39,7 @@ module SRTreeC
 	uses interface PacketQueue as AggQueryReceiveQueue;
 
 	uses interface Packet as AggMinPacket;
+	uses interface AMPacket as AggMinAMPacket;
 	uses interface AMSend as AggMinAMSend;
 	uses interface Receive as AggMinReceive;
 	uses interface PacketQueue as AggMinSendQueue;
@@ -553,10 +554,10 @@ implementation
 
 	event void EpochTimer.fired(){
 		uint16_t temp;
-		epochCounter += 1;
 		message_t out;
 		error_t enqueueDone;
 		AggregationMin* am;
+		epochCounter += 1;
 		if(epochCounter == 1 ){
 			sample = (call Random.rand16() % 60) + 1; // random sample between 1 and 60
 		}else{
