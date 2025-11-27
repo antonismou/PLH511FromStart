@@ -1,10 +1,6 @@
 #ifndef SIMPLEROUTINGTREE_H
 #define SIMPLEROUTINGTREE_H
 
-task void sendRoutingTask();
-task void receiveRoutingTask();
-
-
 enum{
 	SENDER_QUEUE_SIZE=5,
 	RECEIVER_QUEUE_SIZE=3,

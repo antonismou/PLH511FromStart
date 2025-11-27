@@ -3,6 +3,9 @@
     #include "printf.h"
 #endif
 
+task void sendRoutingTask();
+task void receiveRoutingTask();
+
 module SRTreeC
 {
     uses interface Boot;
