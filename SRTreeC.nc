@@ -602,7 +602,7 @@ implementation
 				}
 				call AggMinAMPacket.setDestination(&out, parentID);
 				call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
-				enqueueDone=call AggMinSendQueue.enqueue(out);
+				enqueueDone=call AggMinSendQueue.enqueue(am);
 		
 				if( enqueueDone==SUCCESS)
 				{
