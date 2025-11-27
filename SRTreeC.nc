@@ -600,7 +600,7 @@ implementation
 					dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
 					return;
 				}
-				call AggMinAMPacket.setDestination(&out, AM_BROADCAST_ADDR);
+				call AggMinAMPacket.setDestination(&out, parentID);
 				call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
 				enqueueDone=call AggMinSendQueue.enqueue(out);
 		

@@ -58,6 +58,9 @@ implementation{
     SRTreeC.AggMinSendQueue->AggMinSendQueueC;
     SRTreeC.AggMinReceiveQueue->AggMinReceiveQueueC;
     SRTreeC.EpochTimer->EpochTimerC;
+
+    AggMinReceiverC->ActiveMessageC;
+    AggMinSenderC->ActiveMessageC;
   
 #ifdef SERIAL_EN    
     //SRTreeC.SerialReceive->SerialAMReceiverC.Receive;
