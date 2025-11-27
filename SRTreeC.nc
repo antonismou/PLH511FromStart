@@ -92,6 +92,13 @@ implementation
 
 	task void sendRoutingTask();
 	task void receiveRoutingTask();
+	task void sendAggMinTask();
+	task void receiveAggMinTask();
+	task void sendAggSumTask();
+	task void receiveAggSumTask();
+	task void sendAggAvgTask();
+	task void receiveAggAvgTask();
+
 
 
 #ifdef SERIAL_EN
