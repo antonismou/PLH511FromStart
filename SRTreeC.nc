@@ -574,7 +574,7 @@ implementation
 		if(epochCounter == 1 ){
 			sample = (call Random.rand16() % 60) + 1; // random sample between 1 and 60
 		}else{
-			sample = sample * ((call Random.rand16() % 40) + 80)/100; // * 0.8 to 1.2
+			sample = (sample * ((call Random.rand16() % 40) + 80)) / 100; // * 0.8 to 1.2
 			if(sample > 60){
 				sample = 60;
 			}
@@ -585,11 +585,11 @@ implementation
 			am = (AggregationMin*) call AggMinPacket.getPayload(&out, sizeof(AggregationMin));
 			if (am == NULL) {return; }
 
-			if(sample > agg_min){
-				temp = agg_min;
-			}else{
+			if(sample < agg_min){
 				temp = sample;
 				agg_min = sample;
+			}else{
+				temp = agg_min;
 			}
 			if(TOS_NODE_ID != 0){
 				dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
@@ -601,7 +601,7 @@ implementation
 				
 				dbg("SentAggMin", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
 				/* don't send if we don't have a parent yet */
-				if (parentID == -1) {
+				if ((parentID < 0) || (parentID == 0xFFFF)) {
 					dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
 					return;
 				}

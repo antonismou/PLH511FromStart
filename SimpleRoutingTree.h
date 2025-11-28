@@ -23,7 +23,7 @@ uint16_t AM_NOTIFYPARENTMSG=AM_SIMPLEROUTINGTREEMSG;
 //ADDED
 typedef nx_struct AggregationMin {
 	nx_uint16_t epoch;      // epoch number
-	nx_uint8_t minVal;      // minimum value (used for MIN)
+	nx_uint16_t minVal;     // minimum value (used for MIN) - changed from uint8_t to uint16_t
 	nx_uint16_t senderID;   // id of node sending this msg (optional, for debug)
 } AggregationMin;
 
