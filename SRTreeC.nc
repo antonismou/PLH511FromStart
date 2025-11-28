@@ -618,7 +618,6 @@ implementation
 			else if(aggType == AGGREGATION_TYPE_AVG){ // AVG
 				// send avg aggregation message
 			}
-			}
 		}else if(TOS_NODE_ID == 0) {
 			// root: finalize and print
 			if (aggType == AGGREGATION_TYPE_MIN) dbg("Results","AGG RESULT epoch=%u MIN=%u \n", epochCounter, agg_min);
