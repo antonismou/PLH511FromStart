@@ -287,7 +287,7 @@ implementation
    			 post sendRoutingTask();
    		 }
    		 
-   		 dbg("SRTreeC","RoutingMsg enqueued successfully in SendingQueue!!!\n");
+   		 dbg("SRTreeC","RoutingMsg enqueued successfully in SendingQueue!!! Size: %u/%u\n", call RoutingSendQueue.size(), call RoutingSendQueue.maxSize());
 #ifdef PRINTFDBG_MODE
    		 printf("RoutingMsg enqueued successfully in SendingQueue!!!\n");
    		 printfflush();
@@ -443,7 +443,11 @@ implementation
 #endif
    	 if (call RoutingSendQueue.empty())
    	 {
+<<<<<<< Updated upstream
    		 dbg("RoutingMsg","sendRoutingTask(): Q is empty!\n");
+=======
+   	 	 dbg("RoutingMsg","sendRoutingTask(): Q is empty! Size: 0/%u\n", call RoutingSendQueue.maxSize());
+>>>>>>> Stashed changes
 #ifdef PRINTFDBG_MODE   	 
    		 printf("sendRoutingTask():Q is empty!\n");
    		 printfflush();
@@ -612,7 +616,7 @@ implementation
 		
 			if( enqueueDone==SUCCESS){
 				post sendAggMinTask();
-				dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!!\n");	
+				dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!! Size: %u/%u\n", call AggMinSendQueue.size(), call AggMinSendQueue.maxSize());	
 			}
 			}else if(aggType == AGGREGATION_TYPE_SUM){ // SUM
 				// send sum aggregation message
@@ -643,7 +647,7 @@ implementation
 
    	 if (call AggMinSendQueue.empty())
    	 {
-   		 dbg("SentAggMin","sendAggMinTask(): Q is empty!\n");
+   	 	 dbg("SentAggMin","sendAggMinTask(): Q is empty! Size: 0/%u\n", call AggMinSendQueue.maxSize());
 #ifdef PRINTFDBG_MODE   	 
    		 printf("sendAggMinTask():Q is empty!\n");
    		 printfflush();
@@ -730,7 +734,7 @@ implementation
    	message_t msg;
 
    	if(call AggMinReceiveQueue.empty()) {
-   		dbg("ReceiveAggMin","receiveAggMinTask(): Queue is empty!\n");
+   		dbg("ReceiveAggMin","receiveAggMinTask(): Queue is empty! Size: 0/%u\n", call AggMinReceiveQueue.maxSize());
    		return;
    	}
    	 

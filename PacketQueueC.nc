@@ -82,7 +82,7 @@ implementation
 		
 		if (isFull)
 		{
-			dbg("PacketQueueC","enqueue(): Queue is FULL!!!\n");
+			dbg("PacketQueueC","enqueue(): Queue is FULL!!! Size: %u/%u\n", size, queueSize);
 #ifdef PRINTFDBG_MODE
 			printf("PacketQueueC:enqueue(): Queue is FULL!!!\n");
 			printfflush();
@@ -100,7 +100,7 @@ implementation
 			//Q[tailIndex]=*(message_t*)newPkt;
 			size++;
 		}
-		dbg("PacketQueueC","enqueue(): Enqueued in pos= %u \n",tailIndex);
+		dbg("PacketQueueC","enqueue(): Enqueued in pos= %u, Queue size NOW: %u/%u\n",tailIndex, size, queueSize);
 #ifdef PRINTFDBG_MODE
 		printf("PacketQueueC : enqueue() : pos=%u \n", tailIndex);
 		printfflush();
@@ -118,7 +118,7 @@ implementation
 		}
 		if (isEmpty)
 		{
-			dbg("PacketQueueC","dequeue(): Q is emtpy!!!!\n");
+			dbg("PacketQueueC","dequeue(): Q is emtpy!!!! Size: %u\n", size);
 #ifdef PRINTFDBG_MODE
 			printf("PacketQueueC : dequeue() : Q is empty!!! \n");
 			printfflush();
@@ -139,7 +139,7 @@ implementation
 			size--;
 			m=Q[tmp];
 		}
-		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u \n",tmp);//(queueSize+headIndex-1)%queueSize);
+		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u, Queue size NOW: %u/%u\n",tmp, size, queueSize);//(queueSize+headIndex-1)%queueSize);
 #ifdef PRINTFDBG_MODE
 		printf("PacketQueueC : dequeue(): pos = %u \n", tmp);
 		printfflush();
