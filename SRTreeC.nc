@@ -450,8 +450,10 @@ implementation
 #endif
    		 return;
    	 }
-	dbg("Epoch","Start epoch timer for node %d \n", TOS_NODE_ID);
-   	call EpochTimer.startPeriodicAt(EPOCH_PERIOD_MILLI - (curdepth*WINDOW_MILLI),EPOCH_PERIOD_MILLI);
+	 if (curdepth >= 0) {
+	 	dbg("Epoch","Start epoch timer for node %d \n", TOS_NODE_ID);
+	 	call EpochTimer.startPeriodicAt(EPOCH_PERIOD_MILLI - (curdepth*WINDOW_MILLI),EPOCH_PERIOD_MILLI);
+	 }
    	 
    	 if(RoutingSendBusy)
    	 {
@@ -656,7 +658,6 @@ implementation
 	mdest=call AggMinAMPacket.destination(&toSend);
  	 mlen= call AggMinPacket.payloadLength(&toSend);
 
-	 dbg("SentAggMin","Min Value to send in packet min %d\n", ((AggregationMin*)call AggMinPacket.getPayload(&toSend, mlen))->minVal);
    	 if(mlen!=sizeof(AggregationMin))
    	 {
    		 dbg("SentAggMin","\t\tsendAggMinTask(): Unknown message!!!\n");
@@ -668,6 +669,8 @@ implementation
    	 	 dbg("SentAggMin","sendAggMinTask(): getPayload returned NULL\n");
    	 	 return;
    	 }
+   	 
+	 dbg("SentAggMin","Min Value to send in packet min %d\n", agg->minVal);
    	 
 	 dbg("SentAggMin","Min Value to send in packet min %d\n", agg->minVal);
 		 dbg("SentAggMin","sendAggMinTask(): sending to dest=%u len=%u\n", mdest, mlen);
