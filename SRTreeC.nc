@@ -580,8 +580,8 @@ implementation
 			}
 		}
 		dbg("Sample","Sample generated: %u in Node %d\n", sample, TOS_NODE_ID);
-		
-		if(aggType == AGGREGATION_TYPE_MIN){ // MIN
+		if(TOS_NODE_ID !=0){
+			if(aggType == AGGREGATION_TYPE_MIN){ // MIN
 			am = (AggregationMin*) call AggMinPacket.getPayload(&out, sizeof(AggregationMin));
 			if (am == NULL) {return; }
 
@@ -591,41 +591,35 @@ implementation
 			}else{
 				temp = agg_min;
 			}
-			if(TOS_NODE_ID != 0){
-				dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
-				atomic{
+			dbg("Min","Node %d: sample=%u , agg_min=%u \n", TOS_NODE_ID, sample, agg_min);
+			atomic{
 				am->minVal = temp;
 				am->epoch = epochCounter;
 				am->senderID = TOS_NODE_ID;
-				}
-				
-				dbg("SentAggMin", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
-				/* don't send if we don't have a parent yet */
-				if ((parentID < 0) || (parentID == 0xFFFF)) {
-					dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
-					return;
-				}
-				call AggMinAMPacket.setDestination(&out, parentID);
-				call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
-				enqueueDone=call AggMinSendQueue.enqueue(out);
-		
-				if( enqueueDone==SUCCESS)
-				{
-					post sendAggMinTask();
-					dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!!\n");	
-				}
-				
 			}
-			
-		}
-		else if(aggType == AGGREGATION_TYPE_SUM){ // SUM
-			// send sum aggregation message
-		}
-		else if(aggType == AGGREGATION_TYPE_AVG){ // AVG
-			// send avg aggregation message
-		}
-
-		if (TOS_NODE_ID == 0) {
+				
+			dbg("SentAggMin", "EpochTimer.fired(): Sending MIN aggregation message, epoch=%u, minVal=%u, sample=%u\n", am->epoch, am->minVal, sample);
+			/* don't send if we don't have a parent yet */
+			if ((parentID < 0) || (parentID == 0xFFFF)) {
+				dbg("Epoch","EpochTimer.fired(): parent not set, skipping AggMin send on node %d\n", TOS_NODE_ID);
+				return;
+			}
+			call AggMinAMPacket.setDestination(&out, parentID);
+			call AggMinPacket.setPayloadLength(&out, sizeof(AggregationMin));
+			enqueueDone=call AggMinSendQueue.enqueue(out);
+		
+			if( enqueueDone==SUCCESS){
+				post sendAggMinTask();
+				dbg("Epoch","MIN aggregation message enqueued successfully in SendingQueue!!!\n");	
+			}
+			}else if(aggType == AGGREGATION_TYPE_SUM){ // SUM
+				// send sum aggregation message
+			}
+			else if(aggType == AGGREGATION_TYPE_AVG){ // AVG
+				// send avg aggregation message
+			}
+			}
+		}else if(TOS_NODE_ID == 0) {
 			// root: finalize and print
 			if (aggType == AGGREGATION_TYPE_MIN) dbg("Results","AGG RESULT epoch=%u MIN=%u \n", epochCounter, agg_min);
 			else if (aggType == AGGREGATION_TYPE_SUM) dbg("Results","AGG RESULT epoch=%u SUM=%u\n", epochCounter, agg_sum);
