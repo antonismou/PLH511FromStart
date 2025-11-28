@@ -443,11 +443,8 @@ implementation
 #endif
    	 if (call RoutingSendQueue.empty())
    	 {
-<<<<<<< Updated upstream
-   		 dbg("RoutingMsg","sendRoutingTask(): Q is empty!\n");
-=======
+
    	 	 dbg("RoutingMsg","sendRoutingTask(): Q is empty! Size: 0/%u\n", call RoutingSendQueue.maxSize());
->>>>>>> Stashed changes
 #ifdef PRINTFDBG_MODE   	 
    		 printf("sendRoutingTask():Q is empty!\n");
    		 printfflush();
