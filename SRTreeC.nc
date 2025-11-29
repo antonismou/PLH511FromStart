@@ -362,7 +362,6 @@ implementation
     event message_t* RoutingReceive.receive( message_t * msg , void * payload, uint8_t len)
     {
    	 error_t enqueueDone;
-   	 message_t tmp;
    	 uint16_t msource;
    	 
    	 msource =call RoutingAMPacket.source(msg);
@@ -387,11 +386,7 @@ implementation
    		 //return msg;
    	 //}
    	 
-   	 atomic{
-   	 memcpy(&tmp,msg,sizeof(message_t));
-   	 //tmp=*(message_t*)msg;
-   	 }
-   	 enqueueDone=call RoutingReceiveQueue.enqueue(tmp);
+   	 enqueueDone=call RoutingReceiveQueue.enqueue(*msg);
    	 if(enqueueDone == SUCCESS)
    	 {
 #ifdef PRINTFDBG_MODE
@@ -451,8 +446,9 @@ implementation
    		 return;
    	 }
 	 if (curdepth >= 0) {
+	 	uint16_t random_offset = call Random.rand16() % 500;
 	 	dbg("Epoch","Start epoch timer for node %d \n", TOS_NODE_ID);
-	 	call EpochTimer.startPeriodicAt(EPOCH_PERIOD_MILLI - (curdepth*WINDOW_MILLI),EPOCH_PERIOD_MILLI);
+	 	call EpochTimer.startPeriodicAt(EPOCH_PERIOD_MILLI - (curdepth*WINDOW_MILLI) + random_offset,EPOCH_PERIOD_MILLI);
 	 }
    	 
    	 if(RoutingSendBusy)
@@ -514,7 +510,6 @@ implementation
     
     task void receiveRoutingTask()
     {
-   	 message_t tmp;
    	 uint8_t len;
    	 message_t radioRoutingRecPkt;
    	 
@@ -694,18 +689,13 @@ implementation
 	event message_t* AggMinReceive.receive( message_t * msg , void * payload, uint8_t len)
     {
    	 error_t enqueueDone;
-   	 message_t tmp;
    	 uint16_t msource;
    	 dbg("ReceiveAggMin", "### AggMinReceive.receive() start ##### \n");
    	 msource =call AggMinAMPacket.source(msg);
 
     dbg("ReceiveAggMin", "AggMin received (src=%u, len=%u)\n", msource, len);
    	 
-   	 atomic{
-   	 memcpy(&tmp,msg,sizeof(message_t));
-   	 //tmp=*(message_t*)msg;
-   	 }
-   	 enqueueDone=call AggMinReceiveQueue.enqueue(tmp);
+   	 enqueueDone=call AggMinReceiveQueue.enqueue(*msg);
    	 if(enqueueDone == SUCCESS)
    	 {
    		post receiveAggMinTask();
@@ -725,7 +715,6 @@ implementation
 	task void receiveAggMinTask()
     {
 	AggregationMin * mpkt;
-   	message_t tmp;
    	uint16_t len;
    	message_t msg;
 
