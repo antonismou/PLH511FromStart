@@ -457,14 +457,7 @@ implementation
 			return;
 		}
 
-		if (call RoutingSendQueue.dequeue(&radioRoutingSendPkt) != SUCCESS) {
-			dbg("RoutingMsg","sendRoutingTask(): dequeue failed - queue empty or error\n");
-#ifdef PRINTFDBG_MODE
-			printf("sendRoutingTask(): dequeue failed - queue empty or error\n");
-			printfflush();
-#endif
-			return;
-		}
+		radioRoutingSendPkt = call RoutingSendQueue.dequeue();
 
 		//call Leds.led2On();
 		//call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
@@ -521,14 +514,7 @@ implementation
 		printf("ReceiveRoutingTask():received msg...\n");
 		printfflush();
 #endif
-		if (call RoutingReceiveQueue.dequeue(&radioRoutingRecPkt) != SUCCESS) {
-			dbg("RoutingMsg","receiveRoutingTask(): dequeue failed - queue empty or error\n");
-#ifdef PRINTFDBG_MODE
-			printf("receiveRoutingTask(): dequeue failed - queue empty or error\n");
-			printfflush();
-#endif
-			return;
-		}
+		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
 
 		len= call RoutingPacket.payloadLength(&radioRoutingRecPkt);
 
@@ -652,14 +638,7 @@ implementation
 			return;
 		}
 
-		if (call AggMinSendQueue.dequeue(&toSend) != SUCCESS) {
-			dbg("SentAggMin","sendAggMinTask(): dequeue failed - queue empty or error\n");
-#ifdef PRINTFDBG_MODE
-			printf("sendAggMinTask(): dequeue failed - queue empty or error\n");
-			printfflush();
-#endif
-			return;
-		}
+		toSend = call AggMinSendQueue.dequeue();
 
 		//call Leds.led2On();
 		//call Led2Timer.startOneShot(TIMER_LEDS_MILLI);
@@ -740,14 +719,7 @@ implementation
 			return;
 		}
 
-		if (call AggMinReceiveQueue.dequeue(&msg) != SUCCESS) {
-			dbg("ReceiveAggMin","receiveAggMinTask(): dequeue failed - queue empty or error\n");
-#ifdef PRINTFDBG_MODE
-			printf("receiveAggMinTask(): dequeue failed - queue empty or error\n");
-			printfflush();
-#endif
-			return;
-		}
+		msg= call AggMinReceiveQueue.dequeue();
 
 		len= call AggMinPacket.payloadLength(&msg);
 
