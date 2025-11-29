@@ -118,15 +118,16 @@ implementation
 		}
 		if (isEmpty)
 		{
-			dbg("PacketQueueC","dequeue(): Q is emtpy!!!! Size: %u\n", size);
+			dbg("PacketQueueC","dequeue(): Q is empty!!!! Size: %u/%u - returning zeroed message\n", size, queueSize);
 #ifdef PRINTFDBG_MODE
 			printf("PacketQueueC : dequeue() : Q is empty!!! \n");
 			printfflush();
 #endif
+			// Defensive: zero-init the message to prevent crashes from garbage data
 			atomic{
-				m=Q[headIndex];
+				memset(&m, 0, sizeof(message_t));
 			}
-			return m; // must return something to indicate error... (event???)
+			return m;
 		}
 		
 		
@@ -134,12 +135,12 @@ implementation
 			tmp=headIndex;
 			if(tailIndex!=headIndex)
 			{
-				headIndex=(headIndex+1)%queueSize;//???
+				headIndex=(headIndex+1)%queueSize;
 			}
 			size--;
 			m=Q[tmp];
 		}
-		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u, Queue size NOW: %u/%u\n",tmp, size, queueSize);//(queueSize+headIndex-1)%queueSize);
+		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u, Queue size NOW: %u/%u\n",tmp, size, queueSize);
 #ifdef PRINTFDBG_MODE
 		printf("PacketQueueC : dequeue(): pos = %u \n", tmp);
 		printfflush();

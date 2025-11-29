@@ -457,6 +457,15 @@ implementation
 			return;
 		}
 
+		// Defensive: atomic check + dequeue to prevent race condition
+		if (call RoutingSendQueue.empty()) {
+			dbg("RoutingMsg","sendRoutingTask(): Queue became empty before dequeue\n");
+#ifdef PRINTFDBG_MODE
+			printf("sendRoutingTask(): Queue became empty before dequeue\n");
+			printfflush();
+#endif
+			return;
+		}
 		radioRoutingSendPkt = call RoutingSendQueue.dequeue();
 
 		//call Leds.led2On();
@@ -527,12 +536,16 @@ implementation
 
 		// pos tha xexorizo ta 2 diaforetika minimata???
 
-		if (len == sizeof(RoutingMsg)) {
-			RoutingMsg * mpkt = (RoutingMsg*) (call RoutingPacket.getPayload(&radioRoutingRecPkt,len));
-			if(mpkt==NULL)
-			{
-				return;
-			}
+		// Defensive: atomic check + dequeue to prevent race condition
+		if (call RoutingReceiveQueue.empty()) {
+			dbg("RoutingMsg","receiveRoutingTask(): Queue became empty before dequeue\n");
+#ifdef PRINTFDBG_MODE
+			printf("receiveRoutingTask(): Queue became empty before dequeue\n");
+			printfflush();
+#endif
+			return;
+		}
+		radioRoutingRecPkt= call RoutingReceiveQueue.dequeue();
 			dbg("RoutingMsg", "receiveRoutingTask():senderID= %d , depth= %d , aggType= %d \n", mpkt->senderID, mpkt->depth, mpkt->aggType);
 #ifdef PRINTFDBG_MODE
 			printf("NodeID= %d , RoutingMsg received! \n", TOS_NODE_ID);
