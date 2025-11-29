@@ -446,7 +446,7 @@ implementation
    		 return;
    	 }
 	 if (curdepth >= 0) {
-	 	uint16_t random_offset = call Random.rand16() % 10;
+	 	uint16_t random_offset = call Random.rand16() % 500;
 	 	dbg("Epoch","Start epoch timer for node %d \n", TOS_NODE_ID);
 	 	call EpochTimer.startPeriodicAt(EPOCH_PERIOD_MILLI - (curdepth*WINDOW_MILLI) + random_offset,EPOCH_PERIOD_MILLI);
 	 }
