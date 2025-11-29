@@ -66,6 +66,12 @@ implementation
 	 */
 	command message_t PacketQueue.head()
 	{	
+		if (headIndex >= queueSize) {
+			dbg("PacketQueueC","head(): CRITICAL - headIndex %u >= queueSize %u\n", headIndex, queueSize);
+			message_t m;
+			memset(&m, 0, sizeof(message_t));
+			return m;
+		}
 		return Q[headIndex];
 	}
 	
@@ -95,9 +101,12 @@ implementation
 			{
 				tailIndex = (tailIndex+1)%queueSize;
 			}
-			
-			memcpy(&Q[tailIndex],&newPkt,sizeof(message_t));//???  
-			//Q[tailIndex]=*(message_t*)newPkt;
+			// Safety check: ensure tailIndex is within bounds
+			if (tailIndex >= queueSize) {
+				dbg("PacketQueueC","enqueue(): CRITICAL - tailIndex %u >= queueSize %u\n", tailIndex, queueSize);
+				tailIndex = 0;
+			}
+			memcpy(&Q[tailIndex],&newPkt,sizeof(message_t));
 			size++;
 		}
 		dbg("PacketQueueC","enqueue(): Enqueued in pos= %u, Queue size NOW: %u/%u\n",tailIndex, size, queueSize);
@@ -118,28 +127,34 @@ implementation
 		}
 		if (isEmpty)
 		{
-			dbg("PacketQueueC","dequeue(): Q is emtpy!!!! Size: %u\n", size);
+			dbg("PacketQueueC","dequeue(): Q is empty!!!! Size: %u\n", size);
 #ifdef PRINTFDBG_MODE
 			printf("PacketQueueC : dequeue() : Q is empty!!! \n");
 			printfflush();
 #endif
 			atomic{
-				m=Q[headIndex];
+				memset(&m, 0, sizeof(message_t));
 			}
-			return m; // must return something to indicate error... (event???)
+			return m;
 		}
 		
 		
 		atomic{
 			tmp=headIndex;
+			// Safety check: ensure headIndex is within bounds
+			if (headIndex >= queueSize) {
+				dbg("PacketQueueC","dequeue(): CRITICAL - headIndex %u >= queueSize %u\n", headIndex, queueSize);
+				headIndex = 0;
+				tmp = 0;
+			}
 			if(tailIndex!=headIndex)
 			{
-				headIndex=(headIndex+1)%queueSize;//???
+				headIndex=(headIndex+1)%queueSize;
 			}
 			size--;
 			m=Q[tmp];
 		}
-		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u, Queue size NOW: %u/%u\n",tmp, size, queueSize);//(queueSize+headIndex-1)%queueSize);
+		dbg("PacketQueueC","dequeue(): Dequeued from pos = %u, Queue size NOW: %u/%u\n",tmp, size, queueSize);
 #ifdef PRINTFDBG_MODE
 		printf("PacketQueueC : dequeue(): pos = %u \n", tmp);
 		printfflush();
@@ -150,6 +165,11 @@ implementation
 	command message_t PacketQueue.element(uint8_t mindex)
 	{
 		message_t m;
+		if (mindex >= queueSize) {
+			dbg("PacketQueueC","element(): index %u out of bounds (max %u)\n", mindex, queueSize-1);
+			atomic{ memset(&m, 0, sizeof(message_t)); }
+			return m;
+		}
 		atomic{
 			m = Q[mindex];
 		}
