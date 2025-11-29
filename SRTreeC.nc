@@ -695,18 +695,13 @@ implementation
 	event message_t* AggMinReceive.receive( message_t * msg , void * payload, uint8_t len)
     {
    	 error_t enqueueDone;
-   	 message_t tmp;
    	 uint16_t msource;
    	 dbg("ReceiveAggMin", "### AggMinReceive.receive() start ##### \n");
    	 msource =call AggMinAMPacket.source(msg);
 
     dbg("ReceiveAggMin", "AggMin received (src=%u, len=%u)\n", msource, len);
    	 
-   	 atomic{
-   	 memcpy(&tmp,msg,sizeof(message_t));
-   	 //tmp=*(message_t*)msg;
-   	 }
-   	 enqueueDone=call AggMinReceiveQueue.enqueue(tmp);
+   	 enqueueDone=call AggMinReceiveQueue.enqueue(*msg);
    	 if(enqueueDone == SUCCESS)
    	 {
    		post receiveAggMinTask();
