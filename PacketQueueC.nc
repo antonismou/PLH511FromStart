@@ -66,9 +66,10 @@ implementation
 	 */
 	command message_t PacketQueue.head()
 	{	
+		message_t m;
 		if (headIndex >= queueSize) {
 			dbg("PacketQueueC","head(): CRITICAL - headIndex %u >= queueSize %u\n", headIndex, queueSize);
-			message_t m;
+			
 			memset(&m, 0, sizeof(message_t));
 			return m;
 		}
