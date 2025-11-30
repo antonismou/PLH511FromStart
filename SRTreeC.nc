@@ -688,61 +688,61 @@ implementation
 
 	event message_t* AggMinReceive.receive( message_t * msg , void * payload, uint8_t len)
     {
-   	 error_t enqueueDone;
-   	 uint16_t msource;
-   	 dbg("ReceiveAggMin", "### AggMinReceive.receive() start ##### \n");
-   	 msource =call AggMinAMPacket.source(msg);
+   		error_t enqueueDone;
+		message_t tmp;
+   		uint16_t msource;
+   		dbg("ReceiveAggMin", "### AggMinReceive.receive() start ##### \n");
+   		msource =call AggMinAMPacket.source(msg);
 
-    dbg("ReceiveAggMin", "AggMin received (src=%u, len=%u)\n", msource, len);
-   	 
-   	 enqueueDone=call AggMinReceiveQueue.enqueue(*msg);
-   	 if(enqueueDone == SUCCESS)
-   	 {
-   		post receiveAggMinTask();
-   	 }
-   	 else
-   	 {
-   		 dbg("Epoch","AggMin enqueue failed!!! \n");
-#ifdef PRINTFDBG_MODE
-   		 printf("AggMin enqueue failed!!! \n");
-   		 printfflush();
-#endif   		 
-   	 }
-   	 dbg("Epoch", "### AggMinReceive.receive() end ##### \n");
-   	 return msg;
+    	dbg("ReceiveAggMin", "AggMin received (src=%u, len=%u)\n", msource, len);
+   		if(len!=sizeof(AggregationMin)){
+   			dbg("ReceiveAggMin","\t\tUnknown AggMin message received!!!\n");
+			return msg;
+	 	}
+		atomic{
+			memcpy(&tmp, msg, sizeof(message_t));
+		}
+   	 	enqueueDone=call AggMinReceiveQueue.enqueue(tmp);
+   		if(enqueueDone == SUCCESS){
+   			post receiveAggMinTask();
+   	 	}else{
+   			dbg("ReceiveAggMin","AggMin enqueue failed!!! \n"); 		 
+		}
+   		dbg("ReceiveAggMin", "### AggMinReceive.receive() end ##### \n");
+   	 	return msg;
     }
 
-	task void receiveAggMinTask()
-    {
-	AggregationMin * mpkt;
-   	uint16_t len;
-   	message_t msg;
+	task void receiveAggMinTask(){
+		AggregationMin * mpkt;
+   		uint16_t len;
+   		message_t msg;
 
-   	if(call AggMinReceiveQueue.empty()) {
-   		dbg("ReceiveAggMin","receiveAggMinTask(): Queue is empty!\n");
-   		return;
-   	}
+   		if(call AggMinReceiveQueue.empty()) {
+   			dbg("ReceiveAggMin","receiveAggMinTask(): Queue is empty!\n");
+   			return;
+   		}
    	 
-   	 msg= call AggMinReceiveQueue.dequeue();
+   		msg= call AggMinReceiveQueue.dequeue();
    	 
-   	 len= call AggMinPacket.payloadLength(&msg);
-   	 
-   	 dbg("Epoch","ReceiveAggMinTask(): len=%u \n",len);
+   		len= call AggMinPacket.payloadLength(&msg);
+   		dbg("ReceiveAggMin","ReceiveAggMinTask(): len=%u \n",len);
 	 
-	if (len == sizeof(AggregationMin)) {
-		mpkt = (AggregationMin*) (call AggMinPacket.getPayload(&msg,len));
-		if (mpkt == NULL) {
-			dbg("ReceiveAggMin","receiveAggMinTask() getPayload returned NULL\n");
-			return;
-		}
-		if (mpkt->epoch != epochCounter) {
-			dbg("Epoch","receiveAggMinTask() from diff epoch \n");
-			return;
-		}
-		dbg("ReceiveAggMin", "receiveAggMinTask():senderID= %d, minVal=%u, epoch=%u \n", mpkt->senderID, mpkt->minVal, mpkt->epoch);
-		agg_min = (mpkt->minVal < agg_min) ? mpkt->minVal : agg_min;
-	}	
-
+		if (len == sizeof(AggregationMin)) {
+			mpkt = (AggregationMin*) (call AggMinPacket.getPayload(&msg,len));
+			if (mpkt == NULL) {
+				dbg("ReceiveAggMin","receiveAggMinTask() getPayload returned NULL\n");
+				return;
+			}
+			if (mpkt->epoch != epochCounter) {
+				dbg("ReceiveAggMin","receiveAggMinTask() from diff epoch \n");
+				return;
+			}
+			dbg("ReceiveAggMin", "receiveAggMinTask():senderID= %d, minVal=%u, epoch=%u \n", mpkt->senderID, mpkt->minVal, mpkt->epoch);
+			agg_min = (mpkt->minVal < agg_min) ? mpkt->minVal : agg_min;
+		}else{
+			dbg("ReceiveAggMin","\t\treceiveAggMinTask(): Unknown message!!!\n");
+		}	
+		return;
 	}
 
 	event void AggMinAMSend.sendDone(message_t * msg , error_t err)
